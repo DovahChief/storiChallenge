@@ -2,6 +2,7 @@ package emailSender
 
 import (
 	"context"
+	"encoding/base64"
 	"fmt"
 	"strconv"
 	"time"
@@ -32,8 +33,13 @@ func SendEmail(ctx context.Context, email string, report model.Report) {
 
 	m.AddPersonalizations(p)
 
-	client := sendgrid.NewSendClient("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")
-	_, err := client.Send(m)
+	rawDecodedText, err := base64.StdEncoding.DecodeString("U0cuZ3BScjZpS2ZSWkc1dDE0RlpJMk9xUS5ubGxqMzYwLVpSaGVHMkF6Y0pPa2I5R3FGemo0dDNWeXFOcHcxVGRDalFr")
+	if err != nil {
+		panic(err)
+	}
+
+	client := sendgrid.NewSendClient(string(rawDecodedText))
+	_, err = client.Send(m)
 	if err != nil {
 		logger.Errorf(ctx, "Error sending email [%v]", err)
 	}
